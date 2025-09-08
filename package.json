@@ -1,0 +1,9 @@
+{
+  "name": "sociabl-site",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "nodemailer": "^6.9.11"
+  }
+}
