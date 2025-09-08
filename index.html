@@ -23,12 +23,12 @@
     }
   </script>
   <style>
-    /* Solid brand background (replaces previous gradient) */
+    /* Solid brand background */
     .gradient-bg { background-color: #00C6CF; }
 
     .hover-lift{transition:transform .3s ease,box-shadow .3s ease}
     .hover-lift:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,198,207,.2)}
-    .fade-in{opacity:0;transform:translateY(30px);animation:fadeInUp .8s ease forwards}
+    .fade-in{opacity:0;transform:translateY(30px);animation:fadeInUp .8s ease forwards;animation-play-state:paused}
     @keyframes fadeInUp{to{opacity:1;transform:translateY(0)}}
     .stagger-1{animation-delay:.1s}
     .stagger-2{animation-delay:.2s}
@@ -41,7 +41,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
         <div class="flex items-center">
-          <!-- Logo replaces text brand -->
+          <!-- Logo -->
           <a href="#home" class="flex items-center" aria-label="Sociabl home">
             <img src="./logo.png" alt="Sociabl logo" class="h-8 w-auto md:h-9" loading="eager" fetchpriority="high" />
           </a>
@@ -138,30 +138,6 @@
     </div>
   </section>
 
-  <!-- Stats -->
-  <section class="py-20 bg-soft-aqua">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid md:grid-cols-4 gap-8 text-center">
-        <div class="fade-in">
-          <div class="text-4xl font-bold text-bright-aqua mb-2" id="stat1">0</div>
-          <div class="text-charcoal font-semibold">Clients Served</div>
-        </div>
-        <div class="fade-in stagger-1">
-          <div class="text-4xl font-bold text-bright-aqua mb-2" id="stat2">0</div>
-          <div class="text-charcoal font-semibold">Revenue Generated</div>
-        </div>
-        <div class="fade-in stagger-2">
-          <div class="text-4xl font-bold text-bright-aqua mb-2" id="stat3">0</div>
-          <div class="text-charcoal font-semibold">Success Rate</div>
-        </div>
-        <div class="fade-in stagger-3">
-          <div class="text-4xl font-bold text-bright-aqua mb-2" id="stat4">0</div>
-          <div class="text-charcoal font-semibold">Years Experience</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- About -->
   <section id="about" class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -199,7 +175,7 @@
           </div>
         </div>
         <div class="fade-in stagger-1">
-          <!-- Callout card now solid blue -->
+          <!-- Callout card solid blue -->
           <div class="bg-bright-aqua rounded-2xl p-8 text-white">
             <h3 class="text-2xl font-bold mb-4">Ready to Transform Your Sales?</h3>
             <p class="mb-6">Join hundreds of companies that have already boosted their revenue with our proven methods.</p>
@@ -315,24 +291,11 @@
       });
     });
 
-    // Counters + fade-in
-    function animateCounter(element, target, suffix = '') {
-      let current = 0; const increment = target / 100;
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) { current = target; clearInterval(timer); }
-        element.textContent = Math.floor(current) + suffix;
-      }, 20);
-    }
-
+    // Fade-in on scroll (no counters)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.style.animationPlayState = 'running';
-          if (entry.target.id === 'stat1') animateCounter(entry.target, 500, '+');
-          else if (entry.target.id === 'stat2') animateCounter(entry.target, 50, 'M+');
-          else if (entry.target.id === 'stat3') animateCounter(entry.target, 95, '%');
-          else if (entry.target.id === 'stat4') animateCounter(entry.target, 15, '+');
         }
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
