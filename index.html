@@ -22,7 +22,9 @@
     }
   </script>
   <style>
-    .gradient-bg{background:linear-gradient(135deg,#00C6CF 0%,#B9F1F4 100%)}
+    /* Solid brand background (replaces previous gradient) */
+    .gradient-bg { background-color: #00C6CF; }
+
     .hover-lift{transition:transform .3s ease,box-shadow .3s ease}
     .hover-lift:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,198,207,.2)}
     .fade-in{opacity:0;transform:translateY(30px);animation:fadeInUp .8s ease forwards}
@@ -68,7 +70,7 @@
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- Hero (now solid blue) -->
   <section id="home" class="gradient-bg pt-20 pb-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
       <div class="text-center">
@@ -121,7 +123,7 @@
         <div class="bg-off-white p-8 rounded-2xl hover-lift fade-in stagger-2">
           <div class="w-16 h-16 bg-bright-aqua rounded-full flex items-center justify-center mb-6">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zM9 19V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0-2V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zM9 19V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2z"></path>
             </svg>
           </div>
           <h3 class="text-2xl font-bold text-charcoal mb-4">Performance Analytics</h3>
@@ -193,7 +195,8 @@
           </div>
         </div>
         <div class="fade-in stagger-1">
-          <div class="bg-gradient-to-br from-bright-aqua to-soft-aqua rounded-2xl p-8 text-white">
+          <!-- Callout card now solid blue instead of gradient -->
+          <div class="bg-bright-aqua rounded-2xl p-8 text-white">
             <h3 class="text-2xl font-bold mb-4">Ready to Transform Your Sales?</h3>
             <p class="mb-6">Join hundreds of companies that have already boosted their revenue with our proven methods.</p>
             <button class="bg-white text-bright-aqua px-6 py-3 rounded-full font-semibold hover:bg-off-white transition-all duration-300">
@@ -224,7 +227,9 @@
               </div>
               <div>
                 <div class="font-semibold">Phone</div>
-                <div class="text-light-grey">0499 242 420</div>
+                <div class="text-light-grey">
+                  <a href="tel:+61499242420" class="hover:text-bright-aqua focus:underline">0499 242 420</a>
+                </div>
               </div>
             </div>
             <div class="flex items-center">
@@ -235,7 +240,9 @@
               </div>
               <div>
                 <div class="font-semibold">Email</div>
-                <div class="text-light-grey">admin@sociablpty.com</div>
+                <div class="text-light-grey">
+                  <a href="mailto:admin@sociablpty.com" class="hover:text-bright-aqua focus:underline">admin@sociablpty.com</a>
+                </div>
               </div>
             </div>
             <div class="flex items-center">
@@ -304,7 +311,7 @@
       });
     });
 
-    // Counters
+    // Counters + fade-in
     function animateCounter(element, target, suffix = '') {
       let current = 0; const increment = target / 100;
       const timer = setInterval(() => {
