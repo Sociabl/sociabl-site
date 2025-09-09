@@ -10,13 +10,15 @@ function readBody(req) {
     req.on('error', reject);
   });
 }
+
 function escapeHtml(str = '') {
-  return String(str).replace(/[&<>"']/g, (s) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
-  }[s]));
+  return String(str).replace(/[&<>"']/g, (s) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[s])
+  );
 }
 
 module.exports = async (req, res) => {
+  // Basic CORS preflight support (optional)
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -37,24 +39,32 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
+  // ---- SendGrid (SMTP) transport via Nodemailer ----
+  // Required env vars (set these in Vercel):
+  // SMTP_HOST=smtp.sendgrid.net
+  // SMTP_PORT=587
+  // SMTP_USER=apikey                    (literally the word "apikey")
+  // SMTP_PASS=<YOUR_SENDGRID_API_KEY>   (the long SG.xxxxx key)
+  // FROM_EMAIL="Sociabl Website <no-reply@sociablpty.com>"
+  // TO_EMAIL=admin@sociablpty.com
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,                // e.g. smtp.sendgrid.net
-      port: Number(process.env.SMTP_PORT) || 587, // 465 for SSL, 587 for TLS
-      secure: Number(process.env.SMTP_PORT) === 465,
+      host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: Number(process.env.SMTP_PORT) === 465, // true only if 465
       auth: {
-        user: process.env.SMTP_USER,              // e.g. "apikey" for SendGrid
-        pass: process.env.SMTP_PASS,              // your API key or SMTP password
+        user: process.env.SMTP_USER || 'apikey',
+        pass: process.env.SMTP_PASS, // SendGrid API Key
       },
     });
 
     const from = process.env.FROM_EMAIL || 'Sociabl Website <no-reply@sociablpty.com>';
-    const to   = process.env.TO_EMAIL   || 'admin@sociablpty.com';
+    const to = process.env.TO_EMAIL || 'admin@sociablpty.com';
 
     await transporter.sendMail({
       from,
       to,
-      replyTo: email,
+      replyTo: email, // so you can reply straight to the sender
       subject: `[Sociabl] New contact form submission`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
       html: `
