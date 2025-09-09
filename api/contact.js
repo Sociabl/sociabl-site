@@ -1,7 +1,7 @@
 // /api/contact.js
 const nodemailer = require('nodemailer');
 
-// Read raw JSON body (Vercel Node function safe)
+// Read raw JSON body (safe for Vercel Node functions)
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = '';
@@ -18,7 +18,7 @@ function escapeHtml(str = '') {
 }
 
 module.exports = async (req, res) => {
-  // Preflight + method guard
+  // Allow CORS preflight (optional) + method guard
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -40,46 +40,24 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
-  // ---------- SMTP TRANSPORT (Brevo) ----------
-  // Required Vercel env vars:
-  // SMTP_HOST=smtp-relay.brevo.com
-  // SMTP_PORT=587
-  // SMTP_USER=<your Brevo login email>
-  // SMTP_PASS=<your Brevo SMTP key>   (Brevo > SMTP & API > SMTP > Generate)
-  // FROM_EMAIL="Sociabl Website <no-reply@sociablpty.com>"
-  // TO_EMAIL=admin@sociablpty.com
   try {
+    // ---- SendGrid SMTP via Nodemailer ----
+    // Required env vars on Vercel:
+    // SMTP_HOST=smtp.sendgrid.net
+    // SMTP_PORT=587
+    // SMTP_USER=apikey                 (literally the word "apikey")
+    // SMTP_PASS=SG.xxxxxxxxxxxxxxxxx   (your SendGrid API key)
+    // FROM_EMAIL="Sociabl Website <no-reply@sociablpty.com>"
+    // TO_EMAIL=admin@sociablpty.com
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+      host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
       port: Number(process.env.SMTP_PORT) || 587,
-      secure: Number(process.env.SMTP_PORT) === 465, // true only for 465
+      secure: Number(process.env.SMTP_PORT) === 465,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.SMTP_USER || 'apikey',
+        pass: process.env.SMTP_PASS, // your SendGrid API key
       },
     });
 
     const from = process.env.FROM_EMAIL || 'Sociabl Website <no-reply@sociablpty.com>';
-    const to = process.env.TO_EMAIL || 'admin@sociablpty.com';
-
-    await transporter.sendMail({
-      from,
-      to,
-      replyTo: email,
-      subject: `[Sociabl] New contact form submission`,
-      text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-        <p><strong>Message:</strong></p>
-        <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
-      `,
-    });
-
-    return res.status(200).json({ ok: true });
-  } catch (err) {
-    console.error('Email error:', err);
-    return res.status(500).json({ error: 'Email failed to send.' });
-  }
-};
+    co
