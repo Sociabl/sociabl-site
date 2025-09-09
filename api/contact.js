@@ -1,7 +1,7 @@
 // /api/contact.js
 const nodemailer = require('nodemailer');
 
-// Helper: read raw JSON body (works in Vercel Node functions)
+// Read raw JSON body (Vercel Node function safe)
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = '';
@@ -18,43 +18,44 @@ function escapeHtml(str = '') {
 }
 
 module.exports = async (req, res) => {
-  // Basic CORS preflight support (optional)
+  // Preflight + method guard
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // Parse JSON
   let payload = {};
   try {
-    const bodyStr = await readBody(req);
-    payload = JSON.parse(bodyStr || '{}');
+    const raw = await readBody(req);
+    payload = JSON.parse(raw || '{}');
   } catch {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
   const { name, email, message, company } = payload;
 
-  // Honeypot: if filled, pretend success (quietly drop spam)
+  // Honeypot (spam): silently OK
   if (company) return res.status(200).json({ ok: true });
 
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
-  // ---- SendGrid (SMTP) transport via Nodemailer ----
-  // Required env vars (set these in Vercel):
-  // SMTP_HOST=smtp.sendgrid.net
+  // ---------- SMTP TRANSPORT (Brevo) ----------
+  // Required Vercel env vars:
+  // SMTP_HOST=smtp-relay.brevo.com
   // SMTP_PORT=587
-  // SMTP_USER=apikey                    (literally the word "apikey")
-  // SMTP_PASS=<YOUR_SENDGRID_API_KEY>   (the long SG.xxxxx key)
+  // SMTP_USER=<your Brevo login email>
+  // SMTP_PASS=<your Brevo SMTP key>   (Brevo > SMTP & API > SMTP > Generate)
   // FROM_EMAIL="Sociabl Website <no-reply@sociablpty.com>"
   // TO_EMAIL=admin@sociablpty.com
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
+      host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
       port: Number(process.env.SMTP_PORT) || 587,
-      secure: Number(process.env.SMTP_PORT) === 465, // true only if 465
+      secure: Number(process.env.SMTP_PORT) === 465, // true only for 465
       auth: {
-        user: process.env.SMTP_USER || 'apikey',
-        pass: process.env.SMTP_PASS, // SendGrid API Key
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
@@ -64,7 +65,7 @@ module.exports = async (req, res) => {
     await transporter.sendMail({
       from,
       to,
-      replyTo: email, // so you can reply straight to the sender
+      replyTo: email,
       subject: `[Sociabl] New contact form submission`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
       html: `
