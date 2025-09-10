@@ -258,7 +258,9 @@
         </div>
         <div class="fade-in stagger-1">
           <!-- CONTACT FORM (posts to /api/contact) -->
-          <form class="space-y-6" id="contact-form" novalidate>
+          <form class="space-y-6" id="contact-form" novalidate
+      action="/api/contact" method="POST" enctype="application/x-www-form-urlencoded">
+
   <!-- Honeypot (invisible to users) -->
   <input type="text" name="company" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true"/>
 
