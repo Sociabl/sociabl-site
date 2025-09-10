@@ -1,7 +1,8 @@
 // /api/contact.js
 const nodemailer = require('nodemailer');
+const { URLSearchParams } = require('url');
 
-// Read raw JSON body (safe for Vercel Node functions)
+// Read raw body (works in Vercel Node functions)
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = '';
@@ -11,6 +12,21 @@ function readBody(req) {
   });
 }
 
+function parsePayload(req, raw = '') {
+  const ct = (req.headers['content-type'] || '').toLowerCase();
+  if (ct.includes('application/json')) {
+    return JSON.parse(raw || '{}');
+  }
+  if (ct.includes('application/x-www-form-urlencoded')) {
+    const p = new URLSearchParams(raw);
+    return Object.fromEntries(p.entries());
+  }
+  // Default: try JSON, then urlencoded
+  try { return JSON.parse(raw || '{}'); } catch { /*ignore*/ }
+  const p = new URLSearchParams(raw);
+  return Object.fromEntries(p.entries());
+}
+
 function escapeHtml(str = '') {
   return String(str).replace(/[&<>"']/g, (s) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[s])
@@ -18,17 +34,17 @@ function escapeHtml(str = '') {
 }
 
 module.exports = async (req, res) => {
-  // Allow CORS preflight (optional) + method guard
+  // Preflight + method guard
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Parse JSON
+  // Parse payload
   let payload = {};
   try {
     const raw = await readBody(req);
-    payload = JSON.parse(raw || '{}');
+    payload = parsePayload(req, raw);
   } catch {
-    return res.status(400).json({ error: 'Invalid JSON' });
+    return res.status(400).json({ error: 'Invalid body' });
   }
 
   const { name, email, message, company } = payload;
@@ -41,16 +57,14 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // ---- SendGrid SMTP via Nodemailer ----
-    // All credentials must come from environment variables set in Vercel:
-    // SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL, TO_EMAIL
+    // ---- SendGrid SMTP via Nodemailer (env vars in Vercel) ----
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
       port: Number(process.env.SMTP_PORT) || 587,
-      secure: Number(process.env.SMTP_PORT) === 465, // true only if using 465
+      secure: Number(process.env.SMTP_PORT) === 465, // only true for 465
       auth: {
         user: process.env.SMTP_USER || 'apikey',
-        pass: process.env.SMTP_PASS, // <-- DO NOT hard-code; use env var
+        pass: process.env.SMTP_PASS, // DO NOT hard-code
       },
     });
 
