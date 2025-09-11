@@ -195,99 +195,47 @@
   </section>
 
   <!-- Contact -->
-  <section id="contact" class="py-20 bg-charcoal text-white">
+  <section id="contact" class="py-16 bg-charcoal text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">Get In Touch</h2>
-        <p class="text-lg max-w-2xl mx-auto">Ready to take your sales to the next level? Let's start the conversation.</p>
-      </div>
-      <div class="grid md:grid-cols-2 gap-12">
-        <div class="fade-in">
-          <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
-          <div class="space-y-4">
-            <div class="flex items-center">
-              <div class="w-12 h-12 bg-bright-aqua rounded-full flex items-center justify-center mr-4">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                </svg>
-              </div>
-              <div>
-                <div class="font-semibold">Phone</div>
-                <div class="text-light-grey">
-                  <a href="tel:+61499242420" class="hover:text-bright-aqua focus:underline">0499 242 420</a>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <div class="w-12 h-12 bg-bright-aqua rounded-full flex items-center justify-center mr-4">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-              </div>
-              <div>
-                <div class="font-semibold">Email</div>
-                <div class="text-light-grey">
-                  <!-- Plain mailto: so the default mail app opens (no target, no JS) -->
-                  <a
-                    href="mailto:ops@sociablpty.com"
-                    class="hover:text-bright-aqua focus:underline"
-                    data-track="contact_email"
-                    aria-label="Email Sociabl at ops@sociablpty.com"
-                  >
-                    ops@sociablpty.com
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <div class="w-12 h-12 bg-bright-aqua rounded-full flex items-center justify-center mr-4">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 111.314 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-              </div>
-              <div>
-                <div class="font-semibold">Office</div>
-                <div class="text-light-grey">31 Albion St, Surry Hills NSW 2010</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="fade-in stagger-1">
-          <!-- CONTACT FORM (posts to /api/contact) -->
-          <form class="space-y-6" id="contact-form" novalidate
-                action="/api/contact" method="POST" enctype="application/x-www-form-urlencoded">
-  <!-- Honeypot (invisible to users) -->
-  <input type="text" name="company" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true"/>
+      <div class="flex flex-col md:flex-row items-stretch justify-center gap-6 md:gap-10">
+        <!-- PHONE -->
+        <a href="tel:+61499242420" class="flex items-center gap-4 bg-[#2a2a2a] rounded-xl p-5 hover:bg-[#313131] transition">
+          <span class="w-10 h-10 bg-bright-aqua rounded-full flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+            </svg>
+          </span>
+          <span>
+            <div class="text-sm text-light-grey">Phone</div>
+            <div class="font-semibold">0499 242 420</div>
+          </span>
+        </a>
 
-  <div>
-    <label class="block text-sm font-medium mb-2" for="name">Name</label>
-    <input id="name" name="name" type="text" required
-           class="w-full px-4 py-3 bg-white text-charcoal rounded-lg focus:outline-none focus:ring-2 focus:ring-bright-aqua"
-           placeholder="Your Name">
-  </div>
+        <!-- EMAIL -->
+        <a href="mailto:ops@sociablpty.com" class="flex items-center gap-4 bg-[#2a2a2a] rounded-xl p-5 hover:bg-[#313131] transition" data-track="contact_email" aria-label="Email Sociabl at ops@sociablpty.com">
+          <span class="w-10 h-10 bg-bright-aqua rounded-full flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+          </span>
+          <span>
+            <div class="text-sm text-light-grey">Email</div>
+            <div class="font-semibold">ops@sociablpty.com</div>
+          </span>
+        </a>
 
-  <div>
-    <label class="block text-sm font-medium mb-2" for="email">Email</label>
-    <input id="email" name="email" type="email" required
-           class="w-full px-4 py-3 bg-white text-charcoal rounded-lg focus:outline-none focus:ring-2 focus:ring-bright-aqua"
-           placeholder="your@email.com">
-  </div>
-
-  <div>
-    <label class="block text-sm font-medium mb-2" for="message">Message</label>
-    <textarea id="message" name="message" rows="4" required
-              class="w-full px-4 py-3 bg-white text-charcoal rounded-lg focus:outline-none focus:ring-2 focus:ring-bright-aqua"
-              placeholder="Tell us about your sales goals..."></textarea>
-  </div>
-
-  <button id="contact-submit" type="submit"
-          class="w-full bg-bright-aqua text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all duration-300">
-    Send Message
-  </button>
-
-  <p id="form-status" class="text-sm mt-2" aria-live="polite"></p>
-</form>
+        <!-- OFFICE -->
+        <div class="flex items-center gap-4 bg-[#2a2a2a] rounded-xl p-5">
+          <span class="w-10 h-10 bg-bright-aqua rounded-full flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </span>
+          <span>
+            <div class="text-sm text-light-grey">Office</div>
+            <div class="font-semibold">31 Albion St, Surry Hills NSW 2010</div>
+          </span>
         </div>
       </div>
     </div>
