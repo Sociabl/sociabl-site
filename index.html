@@ -212,7 +212,7 @@
         </a>
 
         <!-- EMAIL -->
-        <a href="mailto:ops@sociablpty.com" class="flex items-center gap-4 bg-[#2a2a2a] rounded-xl p-5 hover:bg-[#313131] transition" data-track="contact_email" aria-label="Email Sociabl at ops@sociablpty.com">
+        <a id="contact-email-link" href="mailto:ops@sociablpty.com" class="flex items-center gap-4 bg-[#2a2a2a] rounded-xl p-5 hover:bg-[#313131] transition" data-track="contact_email" aria-label="Email Sociabl at ops@sociablpty.com">
           <span class="w-10 h-10 bg-bright-aqua rounded-full flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
@@ -335,7 +335,57 @@
     });
   </script>
 
-  <!-- (Leave this if your host uses Cloudflare) -->
+<script>
+  // Desktop: open a webmail compose tab; Mobile: keep native mail app
+  (function(){
+    const email = 'ops@sociablpty.com';
+    const link = document.getElementById('contact-email-link');
+    if (!link) return;
+
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    // stored preference for desktop webmail provider
+    const prefKey = 'sociabl_webmail_pref';
+    let pref = localStorage.getItem(prefKey);
+
+    function chooseProvider(){
+      const choice = (window.prompt('Open email with: g = Gmail, o = Outlook, y = Yahoo, d = Default mail app', pref || 'g') || 'g').toLowerCase();
+      if (['g','o','y','d'].indexOf(choice) === -1) return chooseProvider();
+      const map = { g: 'gmail', o: 'outlook', y: 'yahoo', d: 'default' };
+      pref = map[choice];
+      localStorage.setItem(prefKey, pref);
+      return pref;
+    }
+
+    function webmailUrl(provider, to){
+      switch(provider){
+        case 'gmail':
+          return `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(to)}`;
+        case 'outlook':
+          return `https://outlook.live.com/mail/0/deeplink/compose?to=${encodeURIComponent(to)}`;
+        case 'yahoo':
+          return `https://compose.mail.yahoo.com/?to=${encodeURIComponent(to)}`;
+        default:
+          return null;
+      }
+    }
+
+    link.addEventListener('click', function(e){
+      if (isMobile) return; // mobile: let mailto open native app
+      if (!pref) chooseProvider();
+      const url = webmailUrl(pref, email);
+      if (url) {
+        e.preventDefault();
+        window.open(url, '_blank');
+      } // else 'default' => allow mailto to open system handler
+    });
+
+    // Helper to set via console
+    window.setSociablWebmail = function(p){ localStorage.setItem(prefKey, p); pref = p; return 'Set to '+p; };
+  })();
+</script>
+
+<!-- (Leave this if your host uses Cloudflare) -->
   <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97a2f0f437adc82a',t:'MTc1NzA0NjEwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
